@@ -25,10 +25,24 @@ async function run(){
               res.send(services);
           });
 
+          app.get('/available', async(req, res) =>{
+            const name = req.query.name || 'name';
+            //step-1
+            const services = await serviceCollection.find().toArray();
+
+
+            res.send(services);
+          })
+
           app.post('/booking', async(req, res) =>{
             const booking = req.body;
+            const query = {product: booking.product, client: booking.client }
+            const exists = await bookingCollection.findOne(query);
             const result = await bookingCollection.insertOne(booking);
-            res.send(result);
+            if(exists){
+              return res.send({success: false, booking: exists})
+            }
+           return res.send({success: true, result});
           })
           
       }
