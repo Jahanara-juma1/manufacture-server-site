@@ -34,6 +34,14 @@ async function run(){
             res.send(services);
           })
 
+          //---------------
+          app.get('/booking', async(req, res) =>{
+            const client = req.query.client;
+           const query = {client: client};
+            const bookings = await bookingCollection.find(query).toArray();
+            res.send(bookings);
+          })
+          //-----------------
           app.post('/booking', async(req, res) =>{
             const booking = req.body;
             const query = {product: booking.product, client: booking.client }
