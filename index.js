@@ -41,7 +41,12 @@ async function run(){
               const services = await cursor.toArray();
               res.send(services);
           });
-        //------------------
+
+          app.get('/user', async(req, res) =>{
+            const users = await userCollection.find().toArray();
+            res.send(users);
+          })
+        
           app.put('/user/:email', async(req, res) =>{
             const email = req.params.email;
             const user = req.body;
@@ -54,7 +59,7 @@ async function run(){
              const token = jwt.sign({email: email}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
              res.send({result, token});
           })
-           //-----------------
+           
           app.get('/available', async(req, res) =>{
             const name = req.query.name || 'name';
             //step-1
