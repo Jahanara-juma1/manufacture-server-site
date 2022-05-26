@@ -28,16 +28,19 @@ function verifyJWT(req, res, next){
   });
 }
 
+
+
 async function run(){
       try{
           await client.connect();
           const serviceCollection = client.db('manufacture_portal').collection('services');
           const bookingCollection = client.db('manufacture_portal').collection('bookings');
           const userCollection = client.db('manufacture_portal').collection('users');
+          const productCollection = client.db('manufacture_portal').collection('product');
 
           app.get('/service', async(req, res) =>{
               const query = {};
-              const cursor = serviceCollection.find(query);
+              const cursor = serviceCollection.find(query).project({name: 1});
               const services = await cursor.toArray();
               res.send(services);
           });
@@ -108,6 +111,8 @@ async function run(){
             }
            
           })
+
+
         
           app.post('/booking', async(req, res) =>{
             const booking = req.body;
@@ -118,6 +123,14 @@ async function run(){
               return res.send({success: false, booking: exists})
             }
            return res.send({success: true, result});
+          })
+
+          //-------------//
+          app.post('/product', async(req,res) =>{
+            const product = req.body;
+            console.log(product);
+            const result = await productCollection.insertOne(product);
+            res.send(result);
           })
           
       }
